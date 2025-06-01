@@ -30,6 +30,7 @@ public class shiyingxing extends AbstractPower {
     private static final String[] DESCRIPTIONS = powerStrings.DESCRIPTIONS;
     private int amountcounter=0;
     private boolean justApplied = false;
+     private int damageamount = 0;
     public shiyingxing(AbstractCreature owner, int Amount,boolean isSourceMonster) {
         this.name = NAME;
         this.ID = POWER_ID;
@@ -64,15 +65,17 @@ public class shiyingxing extends AbstractPower {
             if (this.amount == 0) {
                 this.addToBot(new RemoveSpecificPowerAction(this.owner, this.owner, this.ID));
             } else {
-                this.addToBot(new ReducePowerAction(this.owner, this.owner, this.ID, (int) Math.ceil((double)this.owner.currentHealth / 20F)));
+                this.addToBot(new ReducePowerAction(this.owner, this.owner, this.ID, (int) Math.ceil((double)damageamount / 20F)));
             }
 
         }
+        damageamount=0;
     }
 
 
     public float atDamageReceive(float damage, DamageInfo.DamageType type) {
         if (type == DamageInfo.DamageType.NORMAL) {
+            damageamount+=damage;
           return (float) (damage*(1- (float) this.amount /(this.amount+ Math.ceil(((float) this.owner.currentHealth /3)))));
         } else {
             return damage;

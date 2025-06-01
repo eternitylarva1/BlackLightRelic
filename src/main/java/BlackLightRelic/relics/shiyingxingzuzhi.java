@@ -4,6 +4,7 @@ import BlackLightRelic.helpers.ModHelper;
 import BlackLightRelic.powers.shiyingxing;
 import BlackLightRelic.powers.zuzhizaisheng;
 import basemod.abstracts.CustomRelic;
+import basemod.devcommands.gold.Gold;
 import com.evacipated.cardcrawl.mod.stslib.relics.OnPlayerDeathRelic;
 import com.megacrit.cardcrawl.actions.common.ApplyPowerAction;
 import com.megacrit.cardcrawl.actions.common.RelicAboveCreatureAction;
@@ -18,8 +19,11 @@ import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.monsters.beyond.Darkling;
 import com.megacrit.cardcrawl.powers.MinionPower;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
+import com.megacrit.cardcrawl.relics.CoffeeDripper;
 import com.megacrit.cardcrawl.relics.Pear;
 import com.megacrit.cardcrawl.rooms.AbstractRoom;
+import com.megacrit.cardcrawl.ui.campfire.AbstractCampfireOption;
+import com.megacrit.cardcrawl.ui.campfire.RestOption;
 
 public class shiyingxingzuzhi extends CustomRelic implements OnPlayerDeathRelic {
     // 遗物ID（此处的ModHelper在“04 - 本地化”中提到）
@@ -95,14 +99,27 @@ public class shiyingxingzuzhi extends CustomRelic implements OnPlayerDeathRelic 
     @Override
     public boolean onPlayerDeath(AbstractPlayer abstractPlayer, DamageInfo damageInfo) {
         if(!this.usedUp){
+
+            this.usedUp();
+            AbstractDungeon.player.loseGold(AbstractDungeon.player.gold);
+
+            AbstractDungeon.player.increaseMaxHp(-AbstractDungeon.player.maxHealth/3*2,true);
             AbstractDungeon.player.heal(AbstractDungeon.player.maxHealth/10);
             return false;
         }
         else{
-            this.usedUp();
             return true;
         }
 
     }
-
+    public boolean canUseCampfireOption(AbstractCampfireOption option) {
+        if (option instanceof RestOption && option.getClass().getName().equals(RestOption.class.getName())) {
+            if(this.usedUp) {
+                ((RestOption) option).updateUsability(false);
+            }
+            return false;
+        } else {
+            return true;
+        }
+    }
 }
