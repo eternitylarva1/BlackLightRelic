@@ -4,8 +4,11 @@ import BlackLightRelic.helpers.ModHelper;
 import BlackLightRelic.powers.shiyingxing;
 import BlackLightRelic.powers.zuzhizaisheng;
 import basemod.abstracts.CustomRelic;
+import com.evacipated.cardcrawl.mod.stslib.relics.OnPlayerDeathRelic;
 import com.megacrit.cardcrawl.actions.common.ApplyPowerAction;
 import com.megacrit.cardcrawl.actions.common.RelicAboveCreatureAction;
+import com.megacrit.cardcrawl.cards.DamageInfo;
+import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.ImageMaster;
@@ -18,7 +21,7 @@ import com.megacrit.cardcrawl.relics.AbstractRelic;
 import com.megacrit.cardcrawl.relics.Pear;
 import com.megacrit.cardcrawl.rooms.AbstractRoom;
 
-public class shiyingxingzuzhi extends CustomRelic {
+public class shiyingxingzuzhi extends CustomRelic implements OnPlayerDeathRelic {
     // 遗物ID（此处的ModHelper在“04 - 本地化”中提到）
     public static final String ID = ModHelper.makePath(shiyingxingzuzhi.class.getSimpleName());
     // 图片路径（大小128x128，可参考同目录的图片）
@@ -37,6 +40,7 @@ public class shiyingxingzuzhi extends CustomRelic {
     public shiyingxingzuzhi() {
         super(ID, ImageMaster.loadImage(IMG_PATH), RELIC_TIER, LANDING_SOUND);
         this.counter=-1;
+
 
         // 如果你需要轮廓图，取消注释下面一行并注释上面一行，不需要就删除
         // super(ID, ImageMaster.loadImage(IMG_PATH), ImageMaster.loadImage(OUTLINE_PATH), RELIC_TIER, LANDING_SOUND);
@@ -87,4 +91,18 @@ public class shiyingxingzuzhi extends CustomRelic {
     public AbstractRelic makeCopy() {
         return new shiyingxingzuzhi();
     }
+
+    @Override
+    public boolean onPlayerDeath(AbstractPlayer abstractPlayer, DamageInfo damageInfo) {
+        if(!this.usedUp){
+            AbstractDungeon.player.heal(AbstractDungeon.player.maxHealth/10);
+            return false;
+        }
+        else{
+            this.usedUp();
+            return true;
+        }
+
+    }
+
 }
