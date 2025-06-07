@@ -17,6 +17,7 @@ import com.megacrit.cardcrawl.helpers.PowerTip;
 import com.megacrit.cardcrawl.localization.RelicStrings;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.monsters.beyond.Darkling;
+import com.megacrit.cardcrawl.monsters.beyond.Transient;
 import com.megacrit.cardcrawl.powers.MinionPower;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
 import com.megacrit.cardcrawl.relics.CoffeeDripper;
@@ -76,7 +77,7 @@ public class shiyingxingzuzhi extends CustomRelic implements OnPlayerDeathRelic 
     public void onMonsterDeath(AbstractMonster m) {
         super.onMonsterDeath(m);
 
-            if (!m.hasPower(MinionPower.POWER_ID) && !(m instanceof Darkling)) {
+            if (!m.hasPower(MinionPower.POWER_ID) && !(m instanceof Darkling)&&!(m instanceof Transient)) {
                 AbstractDungeon.player.increaseMaxHp((int) Math.ceil((double) m.maxHealth*6/100), false);
             }
     }

@@ -43,7 +43,7 @@ public class zuzhizaisheng extends AbstractPower {
     }
 
     public void updateDescription() {
-        this.description = DESCRIPTIONS[0] + this.amount + DESCRIPTIONS[3] + (int)Math.ceil((this.amount * (this.owner.maxHealth - this.owner.currentHealth)) / 100.0D) + DESCRIPTIONS[2];
+        this.description = DESCRIPTIONS[0] + this.amount + DESCRIPTIONS[3];
 
                if(AbstractDungeon.player.hasRelic(shiyingxingzuzhi.ID)){
             if(AbstractDungeon.player.getRelic(shiyingxingzuzhi.ID).usedUp){
@@ -66,7 +66,11 @@ public class zuzhizaisheng extends AbstractPower {
                 } else {
                     if (this.duration == Settings.ACTION_DUR_FAST) {
                         AbstractPower p = this.target.getPower(zuzhizaisheng.POWER_ID);
-                        int healmaount = (int)Math.ceil((this.amount * (p.owner.maxHealth - p.owner.currentHealth)) / 100.0D);
+                        int healmaount=this.amount;
+                        ;
+                        if(AbstractDungeon.player.hasRelic(shiyingxingzuzhi.ID)&& AbstractDungeon.player.getRelic(shiyingxingzuzhi.ID).usedUp) {
+                            healmaount = (int) Math.ceil((this.amount * (p.owner.maxHealth - p.owner.currentHealth)) / 100.0D);
+                        }
                         if (this.target.currentHealth > 0) {
                             this.target.tint.color = Color.CHARTREUSE.cpy();
                             this.target.tint.changeColor(Color.WHITE.cpy());

@@ -5,6 +5,7 @@ import BlackLightRelic.utils.TextureUtils;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.megacrit.cardcrawl.actions.AbstractGameAction;
+import com.megacrit.cardcrawl.actions.common.ApplyPowerAction;
 import com.megacrit.cardcrawl.actions.common.ReducePowerAction;
 import com.megacrit.cardcrawl.actions.common.RemoveSpecificPowerAction;
 import com.megacrit.cardcrawl.cards.DamageInfo;
@@ -30,7 +31,7 @@ public class shiyingxing extends AbstractPower {
     private static final String[] DESCRIPTIONS = powerStrings.DESCRIPTIONS;
     private int amountcounter=0;
     private boolean justApplied = false;
-     private int damageamount = 0;
+     private int turndamageamount = 0;
     public shiyingxing(AbstractCreature owner, int Amount,boolean isSourceMonster) {
         this.name = NAME;
         this.ID = POWER_ID;
@@ -45,9 +46,9 @@ public class shiyingxing extends AbstractPower {
         String path48 = "MubanResources/images/powers/shiyingxing.png";
         this.region128 = new TextureAtlas.AtlasRegion(ImageMaster.loadImage(path128), 0, 0, 84, 84);
         this.region48 = TextureUtils.resizeTexture(this.region128, 48, 48);
-        if (AbstractDungeon.actionManager.turnHasEnded && isSourceMonster) {
-            this.justApplied = true;
-        }
+
+        this.justApplied = true;
+
         this.isTurnBased = true;
         // 首次添加能力更新描述
         this.updateDescription();}
@@ -65,23 +66,24 @@ public class shiyingxing extends AbstractPower {
             if (this.amount == 0) {
                 this.addToBot(new RemoveSpecificPowerAction(this.owner, this.owner, this.ID));
             } else {
-                this.addToBot(new ReducePowerAction(this.owner, this.owner, this.ID, (int) Math.ceil((double)damageamount / 20F)));
+                this.addToBot(new ReducePowerAction(this.owner, this.owner, this.ID, (int) Math.ceil((double)turndamageamount / 20F)));
             }
 
         }
-        damageamount=0;
+        turndamageamount=0;
     }
 
 
-    public float atDamageReceive(float damage, DamageInfo.DamageType type) {
-        if (type == DamageInfo.DamageType.NORMAL) {
-            damageamount+=damage;
-          return (float) (damage*(1- (float) this.amount /(this.amount+ Math.ceil(((float) this.owner.currentHealth /3)))));
+
+
+    public int onAttackedToChangeDamage(DamageInfo info, int damageAmount) {
+        if (info.type == DamageInfo.DamageType.NORMAL) {
+            turndamageamount+= (int) (damageAmount*((float) this.amount /(this.amount+ Math.ceil(((float) this.owner.currentHealth /3)))));
+            return (int) (damageAmount*(1- (float) this.amount /(this.amount+ Math.ceil(((float) this.owner.currentHealth /3)))));
         } else {
-            return damage;
+            return damageAmount;
         }
     }
-
     // 能力在更新时如何修改描述
 
 
