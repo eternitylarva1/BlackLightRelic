@@ -8,7 +8,10 @@ import com.megacrit.cardcrawl.cards.DamageInfo;
 import com.megacrit.cardcrawl.core.AbstractCreature;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.ImageMaster;
+import com.megacrit.cardcrawl.monsters.city.TheCollector;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
+
+import java.util.stream.Collector;
 
 public class juanxu extends CustomRelic {
     // 遗物ID（此处的ModHelper在“04 - 本地化”中提到）
