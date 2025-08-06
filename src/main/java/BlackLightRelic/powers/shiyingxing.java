@@ -6,15 +6,18 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.megacrit.cardcrawl.actions.AbstractGameAction;
 import com.megacrit.cardcrawl.actions.common.ApplyPowerAction;
+import com.megacrit.cardcrawl.actions.common.DamageAction;
 import com.megacrit.cardcrawl.actions.common.ReducePowerAction;
 import com.megacrit.cardcrawl.actions.common.RemoveSpecificPowerAction;
 import com.megacrit.cardcrawl.cards.DamageInfo;
+import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.core.AbstractCreature;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.ImageMaster;
 import com.megacrit.cardcrawl.localization.PowerStrings;
+import com.megacrit.cardcrawl.monsters.beyond.TimeEater;
 import com.megacrit.cardcrawl.powers.AbstractPower;
 import com.megacrit.cardcrawl.powers.VulnerablePower;
 import com.megacrit.cardcrawl.relics.TinyHouse;
@@ -58,6 +61,18 @@ public class shiyingxing extends AbstractPower {
     public void updateDescription() {
         this.description = DESCRIPTIONS[0] + this.amount*100 /(this.amount+ Math.ceil(((float) this.owner.currentHealth /3)))+ DESCRIPTIONS[1];
     }
+    public  int getFinalDamage(float  damage) {
+        return (int) (damage*(1- (float) this.amount /(this.amount+ Math.ceil(((float) this.owner.currentHealth /3)))));
+    }
+    public float reverseCalculateOriginalDamage(float finalDamage) {
+            float denominator = 1 - (float) this.amount / (this.amount + (float) Math.ceil((float) this.owner.currentHealth / 3));
+            // 防止除以0的情况
+            if (denominator == 0) {
+                return finalDamage;
+            }
+
+            return finalDamage / denominator;
+    }
     public void atEndOfRound() {
 
         if (this.justApplied) {
@@ -74,12 +89,28 @@ public class shiyingxing extends AbstractPower {
     }
 
 
+    public float atDamageReceive(float damage, DamageInfo.DamageType type) {
+        if (type == DamageInfo.DamageType.NORMAL) {
+            return getFinalDamage(damage);
+        } else {
 
-
-    public int onAttackedToChangeDamage(DamageInfo info, int damageAmount) {
+            return damage;
+        }
+    }/*
+    public int onAttackToChangeDamage(DamageInfo info, int damageAmount) {
         if (info.type == DamageInfo.DamageType.NORMAL) {
             turndamageamount+= (int) (damageAmount*((float) this.amount /(this.amount+ Math.ceil(((float) this.owner.currentHealth /3)))));
-            return (int) (damageAmount*(1- (float) this.amount /(this.amount+ Math.ceil(((float) this.owner.currentHealth /3)))));
+        } else {
+
+        }
+        return damageAmount;
+    }
+*/
+    public int onAttackedToChangeDamage(DamageInfo info, int damageAmount) {
+        if (info.type == DamageInfo.DamageType.NORMAL) {
+
+            turndamageamount+= (int) (reverseCalculateOriginalDamage(info.output)-info.output);
+            return damageAmount;
         } else {
             return damageAmount;
         }
