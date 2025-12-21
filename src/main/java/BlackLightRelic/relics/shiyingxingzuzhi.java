@@ -77,9 +77,15 @@ public class shiyingxingzuzhi extends CustomRelic implements OnPlayerDeathRelic 
     public void onMonsterDeath(AbstractMonster m) {
         super.onMonsterDeath(m);
 
-            if (!m.hasPower(MinionPower.POWER_ID) && !(m instanceof Darkling)&&!(m instanceof Transient)) {
+        if (!m.hasPower(MinionPower.POWER_ID) && !(m instanceof Darkling)&&!(m instanceof Transient)) {
+            if (m.type== AbstractMonster.EnemyType.BOSS){
                 AbstractDungeon.player.increaseMaxHp((int) Math.ceil((double) m.maxHealth*6/100), false);
+                return;
+            } if (m.type== AbstractMonster.EnemyType.ELITE){
+                AbstractDungeon.player.increaseMaxHp((int) (double) 6, false);
             }
+
+        }
     }
 
     @Override
