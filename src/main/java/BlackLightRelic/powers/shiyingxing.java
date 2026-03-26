@@ -1,6 +1,7 @@
 package BlackLightRelic.powers;
 
 import BlackLightRelic.helpers.ModHelper;
+import BlackLightRelic.relics.shiyingxingzuzhi;
 import BlackLightRelic.utils.TextureUtils;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -58,14 +59,25 @@ public class shiyingxing extends AbstractPower {
     public shiyingxing(AbstractCreature owner, int Amount) {
    this(owner,Amount,false);
     }
+    private float getHealthFactor() {
+        if (this.owner == null) {
+            return 1.0F;
+        }
+        if (this.owner instanceof AbstractPlayer && AbstractDungeon.player != null && AbstractDungeon.player.hasRelic(shiyingxingzuzhi.ID)
+                && AbstractDungeon.player.getRelic(shiyingxingzuzhi.ID).usedUp) {
+            float healthPercent = this.owner.maxHealth <= 0 ? 0.0F : ((float) this.owner.currentHealth / (float) this.owner.maxHealth) * 100.0F;
+            return Math.max(1.0F, (float) Math.ceil(healthPercent / 3.0F));
+        }
+        return Math.max(1.0F, (float) Math.ceil((float) this.owner.currentHealth / 3.0F));
+    }
     public void updateDescription() {
-        this.description = DESCRIPTIONS[0] + this.amount*100 /(this.amount+ Math.ceil(((float) this.owner.currentHealth /3)))+ DESCRIPTIONS[1];
+        this.description = DESCRIPTIONS[0] + this.amount * 100 / (this.amount + getHealthFactor()) + DESCRIPTIONS[1];
     }
     public  int getFinalDamage(float  damage) {
-        return (int) (damage*(1- (float) this.amount /(this.amount+ Math.ceil(((float) this.owner.currentHealth /3)))));
+        return (int) (damage * (1 - (float) this.amount / (this.amount + getHealthFactor())));
     }
     public float reverseCalculateOriginalDamage(float finalDamage) {
-            float denominator = 1 - (float) this.amount / (this.amount + (float) Math.ceil((float) this.owner.currentHealth / 3));
+            float denominator = 1 - (float) this.amount / (this.amount + getHealthFactor());
             // 防止除以0的情况
             if (denominator == 0) {
                 return finalDamage;
