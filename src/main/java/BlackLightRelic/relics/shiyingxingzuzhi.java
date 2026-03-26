@@ -111,7 +111,6 @@ public class shiyingxingzuzhi extends CustomRelic implements OnPlayerDeathRelic 
             this.usedUp();
             AbstractDungeon.player.loseGold(AbstractDungeon.player.gold);
 
-            AbstractDungeon.player.increaseMaxHp(-AbstractDungeon.player.maxHealth/3*2,true);
             AbstractDungeon.player.heal(AbstractDungeon.player.maxHealth/10);
             return false;
         }
@@ -121,13 +120,6 @@ public class shiyingxingzuzhi extends CustomRelic implements OnPlayerDeathRelic 
 
     }
     public boolean canUseCampfireOption(AbstractCampfireOption option) {
-        if (option instanceof RestOption && option.getClass().getName().equals(RestOption.class.getName())) {
-            if(this.usedUp) {
-                ((RestOption) option).updateUsability(false);
-            }
-            return false;
-        } else {
-            return true;
-        }
+        return true;
     }
 }

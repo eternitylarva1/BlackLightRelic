@@ -7,10 +7,14 @@ import com.megacrit.cardcrawl.actions.common.ApplyPowerAction;
 import com.megacrit.cardcrawl.actions.common.HealAction;
 import com.megacrit.cardcrawl.actions.common.LoseHPAction;
 import com.megacrit.cardcrawl.cards.AbstractCard;
+import com.megacrit.cardcrawl.cards.DamageInfo;
+import com.megacrit.cardcrawl.core.AbstractCreature;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.ImageMaster;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
+import com.megacrit.cardcrawl.powers.GainStrengthPower;
 import com.megacrit.cardcrawl.powers.PoisonPower;
+import com.megacrit.cardcrawl.powers.StrengthPower;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
 
 public class posuidezhengji extends CustomRelic {
@@ -66,6 +70,15 @@ public class posuidezhengji extends CustomRelic {
         }
         AbstractDungeon.actionManager.addToBottom(new ApplyPowerAction(AbstractDungeon.player, AbstractDungeon.player, new heiguang(AbstractDungeon.player, 3), 3));
 
+    }
+    @Override
+    public void onAttack(DamageInfo info, int damageAmount, AbstractCreature target) {
+        super.onAttack(info, damageAmount, target);
+        if (target instanceof AbstractMonster && damageAmount > 0 && info.owner == AbstractDungeon.player) {
+            this.flash();
+            this.addToBot(new ApplyPowerAction(target, AbstractDungeon.player, new StrengthPower(target, -2), -2));
+            this.addToBot(new ApplyPowerAction(target, AbstractDungeon.player, new GainStrengthPower(target, 2), 2));
+        }
     }
 
     public AbstractRelic makeCopy() {
